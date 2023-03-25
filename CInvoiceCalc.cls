@@ -20,7 +20,7 @@ Private mRUT As Currency
 Private mCustomer As CCustomer
 
 Public Sub Calculate(inCustomerID As Long, inYear As Long, inMonth As Long)
-  Dim s As String
+  Dim sql As String
   mHours = 0
   mTotal = 0
   mNet = 0
@@ -29,11 +29,11 @@ Public Sub Calculate(inCustomerID As Long, inYear As Long, inMonth As Long)
   Set mCustomer = New CCustomer
   mCustomer.CustomerID inCustomerID
   
-  s = "SELECT * FROM Schedules where CustomerID= " & inCustomerID & " and " & _
+  sql = "SELECT * FROM Schedules where CustomerID= " & inCustomerID & " and " & _
             "Month(StartTimePLanned) = " & inMonth & " AND Year(StartTimePLanned) = " & inYear & _
             " Order BY StartTimePlanned"
   
-  Set rstItems = db.connection.OpenRecordset(s, dbOpenDynaset, dbSeeChanges)
+  Set rstItems = db.connection.OpenRecordset(sql, dbOpenDynaset, dbSeeChanges)
   If Not rstItems.EOF Then
     rstItems.MoveLast
     rstItems.MoveFirst

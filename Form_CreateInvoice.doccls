@@ -8,3 +8,23 @@ Private Sub btnCreateInvoice_Click()
   Invoice.Save
   Invoice.CloseMe
 End Sub
+
+Private Sub cbMonth_AfterUpdate()
+  FillCustomersListbox
+End Sub
+
+Private Sub Form_Load()
+  FillCustomersListbox
+End Sub
+
+Private Sub tbYear_AfterUpdate()
+  FillCustomersListbox
+End Sub
+
+Private Sub FillCustomersListbox()
+  Dim applicableCustomers As New CustomersToInvoice
+  Dim sql
+  sql = applicableCustomers.sqlListCustomers(Me.tbYear, Me.cbMonth)
+  Me.cbCustomer.RowSource = sql
+
+End Sub
