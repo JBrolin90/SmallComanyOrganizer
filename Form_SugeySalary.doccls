@@ -1,0 +1,22 @@
+﻿'@Folder "SugeySalary"
+Option Compare Database
+Option Explicit
+
+Private WithEvents ev As CEventProxy
+Private Const PayDay As String = "Att utbetala <Month> 25"
+Private ss As New CSugeySalary
+
+Private Sub ev_CurrentPeriod(Year As Long, Month As Long)
+  ss.Init Year, Month
+  Me.tbGrossSalary = ss.GrossSalary
+  Me.tbTax = ss.Tax
+  Me.tbNetSalary = ss.NetSalary
+  
+  Dim m As String
+  m = DLookup("MonthName", "Months", "MonthNr = " & Month + 1)
+  Me.lblToPay.Caption = Replace(PayDay, "<Month>", m)
+End Sub
+
+Private Sub Form_Load()
+ Set ev = mEventProxy.EventProxy
+End Sub

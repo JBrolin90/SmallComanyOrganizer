@@ -1,0 +1,33 @@
+﻿Option Compare Database
+Option Explicit
+
+Private ms As CMonthlySales
+
+Private Sub Calculate()
+  ms.SumTotals Me.tbMonth, Me.tbYear
+End Sub
+
+Private Sub Display()
+  Me.tbCustomers = ms.CustomerSales
+  Me.tbRUT = ms.RUT
+  Me.tbVAT = ms.VAT
+  Me.tbSales = ms.Sales
+  Me.tbTotal = ms.Total
+  DoEvents
+End Sub
+
+Private Sub Clear()
+  Me.tbCustomers = ""
+  Me.tbRUT = ""
+  Me.tbVAT = ""
+  Me.tbSales = ""
+  Me.tbTotal = ""
+  DoEvents
+End Sub
+
+Private Sub bnCalculate_Click()
+  Clear
+  Set ms = New CMonthlySales
+  Calculate
+  Display
+End Sub

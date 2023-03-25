@@ -1,0 +1,34 @@
+﻿'@Folder "Monthly"
+Option Compare Database
+
+Private monthlySales As New CMonthlySales
+Private monthlySalary As New CMonthlySalary
+
+
+Private Sub bnCalculate_Click()
+  monthlySales.SumTotals Me.cbMonth, Me.tbYear
+  monthlySalary.SumTotals Me.cbMonth, Me.tbYear
+  DrawSales
+  DoEvents
+  DrawSalaries
+  DoEvents
+  mEventProxy.EventProxy.SendPeriod Me.tbYear, Me.cbMonth
+End Sub
+
+Private Sub DrawSales()
+  Me.tbVAT = monthlySales.VAT
+  Me.tbSales = monthlySales.CustomerSales
+  Me.tbRUT = monthlySales.RUT
+  Me.tbTotal = monthlySales.CustomerSales + monthlySales.RUT
+End Sub
+
+Private Sub DrawSalaries()
+  With monthlySalary
+    Me.tbGrossSalary = .GrossSalary
+    Me.tbATax = .Tax
+    Me.tbNetSalary = .Net
+    Me.tbSocialFee = .Social
+    Me.tbTotalTax = .TotalTax
+    Me.tbTotalExp = .Total
+  End With
+End Sub

@@ -1,0 +1,49 @@
+﻿'@Folder "Schedule"
+Option Compare Database
+Option Explicit
+
+Private WithEvents evSch As CEventProxy
+
+Private enabled As Boolean
+Private Sub evSch_ScheduleCustomerSelected(record As DAO.Fields)
+  enabled = False
+    FilterRows record!CustomerID
+    Me.Recordset.FindFirst "ID = " & record!ID
+  enabled = True
+  DoEvents
+End Sub
+
+
+
+Private Sub Form_Current()
+  'Set evSch = mEventProxy.EventProxy
+  If enabled Then
+    mEventProxy.EventProxy.SendSchedulesRowSelected Me.ID
+  End If
+  DoEvents
+End Sub
+
+Private Sub Form_AfterUpdate()
+  Debug.Print "Form_AfterUpdate()"
+End Sub
+
+
+Private Sub Form_Load()
+  enabled = True
+  Set evSch = mEventProxy.EventProxy
+End Sub
+
+Private Sub Form_SelectionChange()
+  Debug.Print "Form_SelectionChange()"
+End Sub
+
+Private Sub FilterRows(CustomerID As Long)
+  Dim rst As DAO.Recordset
+  Dim sql As String
+  sql = "SELECT * FROM Schedules "
+  sql = sql & "WHERE CustomerID = " & CustomerID & " "
+  sql = sql & "ORDER BY StartTimePlanned "
+  Set rst = db.GetRecordset(sql)
+  Set Me.Recordset = rst
+  'Me.Requery
+End Sub

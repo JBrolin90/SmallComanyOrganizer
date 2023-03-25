@@ -1,0 +1,33 @@
+﻿'@Folder("Employee")
+Option Compare Database
+Option Explicit
+
+Private employees As cEmployees
+Private Employee As CEmployee2
+
+
+Private Property Get emps() As cEmployees
+  If employees Is Nothing Then
+    Set employees = New CEmployee
+  End If
+  Set emps = employees
+End Property
+
+Private Property Get emp() As CEmployee2
+  If Employee Is Nothing Then
+    Set Employee = New CEmployee2
+  End If
+  Set emp = Employee
+End Property
+
+Private Sub Fields2Employee()
+  emp.FirstName = Me.FirstName
+  
+End Sub
+
+
+Private Sub Save()
+  Fields2Employee
+  emps.Add emp
+End Sub
+

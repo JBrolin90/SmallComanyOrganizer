@@ -1,0 +1,69 @@
+﻿'@Folder "Salary"
+Option Compare Database
+Option Explicit
+
+Private Salary As CSalary
+Private Sub btnCalculateSalary_Click()
+  Set Salary = New CSalary
+  Salary.EmpID = Me.Employee
+  Salary.SalaryMonth = Me.Month
+  Salary.SalaryYear = Me.Year
+  Salary.Init
+  
+  Me.GrossSalary = Salary.GrossSalary
+  Me.WorkedHours = Salary.WorkedHours
+  Me.tbTax = Salary.Tax
+  Me.tbNetSalary = Salary.NetSalary
+  Me.tbTable = Salary.Employee.TaxTable
+  Me.tbSocialFee = Salary.SocialFee
+  
+  Dim SalaryAcc As CSalaryAcc
+  Set SalaryAcc = New CSalaryAcc
+  With SalaryAcc
+    .Accumulates Me.Employee, Me.Year, Me.Month
+    Me.AccGrossSalary = .AccGross
+    Me.AccTax = .AccTax
+    Me.AccNet = .AccNet
+    Me.tbAccSocialFee = .AccSocialFee
+  End With
+    
+    
+    
+  
+End Sub
+
+Private Sub SetWorkedMonth()
+  btnCalculateSalary_Click
+  Me.cbWorkedMonth = Salary.WorkMonth
+  Me.tbWorkedYear = Salary.WorkYear
+End Sub
+
+Private Sub btnLonespec_Click()
+  Dim ss As New CSalaryStatement
+  ss.CreateSalaryStatement Me.Employee, Me.Year, Me.Month
+  Dim r As Long
+  'r = MsgBox("Är Lönespecen korrekt?", vbYesNo, "Granska Lönespec")
+  r = vbYes
+  If r = vbYes Then
+    ss.Save
+  End If
+  ss.CloseMe
+  
+End Sub
+
+Private Sub Employee_AfterUpdate()
+  Dim d As Date, i As Long
+  d = Date
+  Debug.Print VBA.Year(d)
+  Me.Month = VBA.Month(Now())
+  btnCalculateSalary_Click
+  SetWorkedMonth
+End Sub
+
+Private Sub Month_AfterUpdate()
+  SetWorkedMonth
+End Sub
+
+Private Sub Year_AfterUpdate()
+  SetWorkedMonth
+End Sub

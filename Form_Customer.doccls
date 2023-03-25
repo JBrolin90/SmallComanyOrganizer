@@ -1,0 +1,139 @@
+﻿'@Folder "Customer"
+Option Compare Database
+Option Explicit
+
+
+Private check As New CCustomerConsistency
+Private customer As New CCustomer
+
+Private Sub SaveMe()
+  If Me.Dirty Then
+    If Not check.frmConsistent(Me) Then
+      Dim reply As Long
+      reply = MsgBox("En eller flera fält saknar information. Vill du spara ändå?", _
+      vbYesNo, "Värden saknas")
+      If reply = vbNo Then Exit Sub
+    End If
+    mEventProxy.EventProxy.evBeforeNewCustomer
+    DoCmd.RunCommand acCmdSaveRecord
+    Me.Dirty = False
+    mEventProxy.EventProxy.evAfterNewCustomer
+  End If
+End Sub
+
+
+Private Sub bnSave_Click()
+  SaveMe
+End Sub
+
+
+Private Sub bnTestButton_Click()
+  mEventProxy.EventProxy.evAfterNewCustomer
+End Sub
+
+Private Sub btnNew_Click()
+  If check.ConfirmSave(Me) Then
+    SaveMe
+  End If
+  DoCmd.GoToRecord , , acNewRec
+  Me.CustomerID = customer.getMaxCustomerID() + 1
+End Sub
+
+
+Private Sub btnUpdateAllInvoiceFolders_Click()
+  Dim i As Integer
+  First_Click
+  For i = 1 To Me.Recordset.RecordCount
+    Me.tbInvoiceFolder = CalculateInvoiceFolder()
+    SaveMe
+    btnNext_Click
+  Next
+End Sub
+
+Private Sub First_Click()
+  If check.ConfirmSave(Me) Then
+    SaveMe
+  End If
+  DoCmd.GoToRecord , , acFirst
+End Sub
+
+Private Sub btnPrevious_Click()
+  If Me.CurrentRecord > 1 Then
+    If check.ConfirmSave(Me) Then
+      SaveMe
+    End If
+    Me.Recordset.MovePrevious
+  End If
+End Sub
+
+Private Sub btnNext_Click()
+  If Me.CurrentRecord < Me.Recordset.RecordCount Then
+    If check.ConfirmSave(Me) Then
+      SaveMe
+    End If
+    Me.Recordset.MoveNext
+  End If
+End Sub
+
+Private Sub btnLast_Click()
+  If check.ConfirmSave(Me) Then
+    SaveMe
+  End If
+  DoCmd.GoToRecord , , acLast
+End Sub
+
+
+
+Public Sub FirstName_AfterUpdate()
+  If Nz(Me.PopularName, vbNullString) = vbNullString Then
+    Me.PopularName = Me.FirstName
+  End If
+  SetInvoiceFolder
+End Sub
+
+Private Sub Form_Load()
+  Me.Bokningar.Form.AfterUpdate = "=FirstName_AfterUpdate()"
+  Me.Bokningar.Form.SelectionChange = "=FirstName_AfterUpdate()"
+  'Me.CombinationViewDS.Form.AfterUpdate = "=SomeFunctionCall()"
+End Sub
+
+Private Sub LastName_AfterUpdate()
+  SetInvoiceFolder
+End Sub
+
+Private Sub List27_AfterUpdate()
+  Me.Recordset.FindFirst "[ID] = " & Me.List27
+  Me.Recordset.FindLast "[ID] = " & Me.List27
+  Debug.Print "Listbox After update " & Me.Recordset.NoMatch
+End Sub
+
+Private Sub ProduktId_AfterUpdate()
+  Dim p As New CProdukt
+  p.Product Me.ProduktId
+  Me.PriceHigh = p.NormalPrice
+  Me.PriceLow = p.LowPrice
+  Me.RUT = p.RUT
+End Sub
+
+Private Sub SetInvoiceFolder()
+  If IsNull(Me.tbInvoiceFolder) Then
+    If Nz(Me.FirstName, "") <> "" And Nz(Me.LastName, "") <> "" Then
+      Me.tbInvoiceFolder = CalculateInvoiceFolder()
+    End If
+  End If
+End Sub
+
+
+Private Function CalculateInvoiceFolder() As String
+  Dim s As String
+  Dim n As Long
+  n = Me.CustomerID
+  If n < 10000 Then n = n + 10000
+  s = n & ". " & Me.FirstName & " " & Me.LastName & "\Fakturor\"
+  
+  CalculateInvoiceFolder = s
+End Function
+
+Private Sub tbInvoiceFolder_Click()
+  SetInvoiceFolder
+End Sub

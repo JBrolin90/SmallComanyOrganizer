@@ -1,0 +1,10 @@
+﻿'@Folder("Invoice")
+Option Compare Database
+Option Explicit
+
+Private Sub btnCreateInvoice_Click()
+  Dim Invoice As New CInvoice
+  Invoice.CreateInvoice Me.cbCustomer, Me.tbYear, Me.cbMonth
+  Invoice.Save
+  Invoice.CloseMe
+End Sub

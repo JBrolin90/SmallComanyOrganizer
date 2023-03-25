@@ -1,0 +1,31 @@
+﻿'@Folder "Tests"
+Option Compare Database
+Option Explicit
+
+Private Sub Command3_Click()
+  With Me.sheet
+    .enabled = True
+    .Locked = False
+    .Visible = True
+    .Class = "Excel.Sheet"
+    .OLETypeAllowed = acOLEEither
+    '    .SourceDoc = "C:\Users\EMWJOAR\OneDrive - Ericsson\Documents\Private\HEMS\New Microsoft Excel Worksheet.xlsx" ' Settings.StatementTemplate
+    .SourceDoc = Settings.StatementTemplate
+    .SourceItem = "R1C1:R5C"
+    .SourceItem = vbNullString
+    .Action = acOLECreateLink
+    .SizeMode = acOLESizeZoom
+  End With
+End Sub
+
+Private Sub Command5_Click()
+  With Me.sheet
+    .Class = "Excel.Sheet"
+    .OLETypeAllowed = acOLELinked
+    '    .SourceDoc = Settings.StatementTemplate
+    '    .SourceItem = "R1C1:R53C11"
+    .Action = acOLEClose
+    '   .SizeMode = acOLESizeZoom
+  End With
+
+End Sub

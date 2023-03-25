@@ -1,0 +1,40 @@
+﻿'@Folder("Employee")
+Option Compare Database
+Option Explicit
+
+Private Sub FirstName_AfterUpdate()
+  If Nz(Me.PopularName, vbNullString) = vbNullString Then
+    Me.PopularName = Me.FirstName
+  End If
+  SetStatemnentFolder
+End Sub
+Private Sub LastName_AfterUpdate()
+  SetStatemnentFolder
+End Sub
+
+Private Sub SetStatemnentFolder()
+  Dim s As String
+  If Nz(Me.StatementFolder, vbNullString) = vbNullString Then
+    If Not (Nz(Me.FirstName, vbNullString) = vbNullString) And Not (Nz(Me.LastName, vbNullString) = vbNullString) Then
+      s = Settings.StatmentBaseFolder() & Me.FirstName & " " & Me.LastName & "\Lönespec\2022\"
+      Me.StatementFolder = s
+    End If
+  End If
+
+End Sub
+
+
+Private Sub Form_Current()
+  Dim query As String
+  query = "SELECT Customers.PopularName FROM Customers WHERE Customers.EmployeeID=" & Me.ID
+  Me.lbCustomers.RowSource = query
+  Me.lbCustomers.Requery
+  SetStatemnentFolder
+  DoCmd.Save
+  'DoCmd.Save acForm, "Employees"
+  Debug.Print "lbCustomers.RowSource = '" & lbCustomers.RowSource & "'"
+End Sub
+
+Private Function getEmployeeID() As Long
+  getEmployeeID = Me.ID
+End Function

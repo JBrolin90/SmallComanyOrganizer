@@ -1,0 +1,23 @@
+﻿'@Folder("Employee")
+Option Compare Database
+Option Explicit
+
+Private Sub FirstName_AfterUpdate()
+  If Nz(Me.PopularName, vbNullString) = vbNullString Then
+    Me.PopularName = Me.FirstName
+  End If
+End Sub
+
+Private Sub Form_Current()
+  Dim query As String
+  query = "SELECT Customers.PopularName FROM Customers WHERE Customers.EmployeeID=" & Me.ID
+  Me.lbCustomers.RowSource = query
+  Me.lbCustomers.Requery
+  DoCmd.Save
+  'DoCmd.Save acForm, "Employees"
+  Debug.Print "lbCustomers.RowSource = '" & lbCustomers.RowSource & "'"
+End Sub
+
+Private Function getEmployeeID() As Long
+  getEmployeeID = Me.ID
+End Function

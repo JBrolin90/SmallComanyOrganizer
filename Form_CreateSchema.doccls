@@ -1,0 +1,10 @@
+﻿'@Folder "Schema"
+Option Compare Database
+Option Explicit
+
+Private Sub btnSchema_Click()
+  Dim sch As New CSchemaExcel
+  sch.CreateSchema Me.cbEmployee, Me.tbYear, Me.cbMonth
+  sch.SaveSchema
+  sch.CloseMe
+End Sub

@@ -1,0 +1,49 @@
+﻿'@Folder "Schedule"
+Option Compare Database
+Option Explicit
+
+Private bookingBrief As CBookingBrief
+
+Private Sub bnClearFilter_Click()
+  Set Me.Recordset = BriefSafe.ClearFilter
+End Sub
+
+Private Sub bnPrint_Click()
+  DoCmd.RunCommand acCmdPrint
+End Sub
+
+Private Sub CPopName_Click()
+  Set Me.Recordset = BriefSafe.Filter(Me!custID, Me!EmpID)
+End Sub
+
+Private Sub Form_Click()
+  Debug.Print "Clicked " & Me!CPopName
+End Sub
+
+Private Sub Form_Current()
+  Debug.Print "Current " & Me!CPopName
+End Sub
+
+Private Sub Form_KeyPress(KeyAscii As Integer)
+  Debug.Print "KeyPressed " & Me!CPopName
+End Sub
+
+Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
+  Debug.Print "KeyUp " & Me!CPopName & "KeyCode= " & KeyCode
+End Sub
+
+Private Sub Form_Load()
+  Set bookingBrief = New CBookingBrief
+  Set Me.Recordset = bookingBrief.rst
+End Sub
+
+Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  Debug.Print "MouseDown " & Me!CPopName & "Button= " & Button
+End Sub
+
+Private Property Get BriefSafe() As CBookingBrief
+  If bookingBrief Is Nothing Then
+    Set bookingBrief = New CBookingBrief
+  End If
+  Set BriefSafe = bookingBrief
+End Property

@@ -1,0 +1,10 @@
+﻿'@Folder "Expenses"
+Option Compare Database
+Option Explicit
+
+Private Sub Form_Load()
+  Dim e As New CExpenses
+  Me.tbNet.value = e.netTotal
+  Me.tbVAT.value = e.vatTotal
+  Me.tbGros.value = e.grosTotal
+End Sub

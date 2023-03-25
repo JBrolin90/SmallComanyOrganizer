@@ -1,0 +1,184 @@
+﻿'@Folder "Schedule"
+Option Compare Database
+Option Explicit
+
+Private WithEvents evSch As CEventProxy
+
+
+Private mProd As CProdukt
+
+
+Private Sub btnDelete_Click()
+  If MsgBox("Vill du ta bort denna bokning?", vbYesNo, "Ta bort bokning?") = vbYes Then
+     If MsgBox("Är du helt säker?" & vbCrLf & _
+      "Bokningen kommer att försvinna", vbYesNo, "Andra frågan") = vbYes Then
+        DoCmd.RunCommand acCmdDeleteRecord
+        Me.Undo
+        DoCmd.GoToRecord , , acFirst
+        mEventProxy.EventProxy.SendSceduleCustomerSelected Me.Recordset
+     End If
+  End If
+End Sub
+
+Private Sub EndTime_AfterUpdate()
+  Dim hours As Long, minutes As Long, d As Double
+  hours = DateDiff("h", Me.StartTime, Me.EndTime)
+  minutes = DateDiff("n", Me.StartTime, Me.EndTime) - 60 * hours
+  d = CDbl(hours) + CDbl(minutes) / CDbl(60)
+  Me.DurationPlanned = d
+
+End Sub
+
+Private Sub evSch_SchedulesRowSelected(ID As Long)
+  Debug.Print "Recieved event Form_Schedule.evSch_evSch_SchedulesRowSelected(ID As Long" & ID & ")"
+  Me.Recordset.FindFirst "ID = " & ID
+End Sub
+
+Private Sub evSch_AfterNewCustomer()
+  Me.Refresh
+End Sub
+
+Private Sub Form_Load()
+  Set evSch = mEventProxy.EventProxy
+  LockControls True
+End Sub
+
+
+
+Private Function ConfirmSave() As Integer
+  ConfirmSave = vbYes
+  If Me.Dirty Then ConfirmSave = MsgBox("Vill du spara dina ändringar?", vbYesNoCancel, "Konfirmera")
+  If ConfirmSave = vbYes Then
+    bnSave_Click
+    Me.Dirty = False
+  End If
+  If ConfirmSave = vbNo Then Me.Undo
+End Function
+
+
+Private Sub bnLock_Click()
+  LockControls True
+End Sub
+Private Sub btnUnlock_Click()
+  LockControls False
+End Sub
+
+
+Private Sub First_Click()
+  If Not ConfirmSave() = vbCancel Then
+    DoCmd.GoToRecord , , acFirst
+    mEventProxy.EventProxy.SendSceduleCustomerSelected Me.Recordset
+  End If
+End Sub
+Private Sub btnPrevious_Click()
+  If Me.CurrentRecord > 1 Then
+    If Not ConfirmSave() = vbCancel Then
+      Me.Recordset.MovePrevious
+      mEventProxy.EventProxy.SendSceduleCustomerSelected Me.Recordset
+    End If
+  End If
+End Sub
+Private Sub btnNext_Click()
+  If Me.CurrentRecord < Me.Recordset.RecordCount Then
+    If Not ConfirmSave() = vbCancel Then
+      Me.Recordset.MoveNext
+      mEventProxy.EventProxy.SendSceduleCustomerSelected Me.Recordset
+    End If
+  End If
+End Sub
+Private Sub btnLast_Click()
+  If Not ConfirmSave() = vbCancel Then
+    DoCmd.GoToRecord , , acLast
+    mEventProxy.EventProxy.SendSceduleCustomerSelected Me.Recordset
+  End If
+End Sub
+
+Private Sub bnSave_Click()
+  Dim s As String
+On Error GoTo catch
+  DoCmd.RunCommand acCmdSaveRecord
+  bnLock_Click
+  Exit Sub
+catch:
+  If err.Number = 3146 Then
+    s = " Fältet 'Timmar', Saknar värde, fyll i värde eller tryck på 'Ta bort' "
+    MsgBox s, vbOKOnly, "Kunde inte spara bokning"
+  Else
+    MsgBox err.Description & " " & err.Number, vbOKOnly, "Kunde inte spara bokning"
+  End If
+End Sub
+Private Sub btnNew_Click()
+  If Not ConfirmSave() = vbCancel Then
+    DoCmd.GoToRecord , , acNewRec
+    btnUnlock_Click
+  End If
+End Sub
+
+Private Sub CustomerID_AfterUpdate()
+  Dim mCustomer As New CCustomer
+  With mCustomer
+    .CustomerID Me.CustomerID
+    Me.Job = .ProductID
+    Me.RUT = .RUT
+    If .DayOfWeek > 3 Then
+      Me.PricePerHour = .NormalPrice
+    Else
+      Me.PricePerHour = .LowPrice
+    End If
+    Me.EmployeeIDPlanned = .EmployeeID
+  End With
+End Sub
+
+Private Sub EmployeeIDPlanned_AfterUpdate()
+  'Me.Schedules.Requery
+End Sub
+
+Private Sub Form_Current()
+  Dim mJob As CSchedule
+  Set mJob = New CSchedule
+  Set mProd = New CProdukt
+  Set evSch = mEventProxy.EventProxy
+
+  'mEventProxy.EventProxy.SendSceduleCustomerSelected Me.Recordset
+End Sub
+
+Public Sub Form_SelectionChange()
+  Debug.Print "Form_SelectionChange()"
+End Sub
+
+Private Sub Job_AfterUpdate()
+  mProd.Product Me.Job
+  Me.PricePerHour = mProd.NormalPrice()
+End Sub
+
+Private Sub FillOutJobData(inJobID As Long)
+
+End Sub
+Private Sub RefreshControls()
+   Dim c As Control
+  For Each c In Me.Form.controls
+    If c.ControlType = acTextBox _
+    Or c.ControlType = acComboBox Then
+      c.Requery
+    End If
+  Next c
+End Sub
+Private Sub LockControls(inLockState As Boolean)
+   Dim c As Control
+  For Each c In Me.Form.controls
+    If c.ControlType = acTextBox _
+    Or c.ControlType = acComboBox Then
+      c.Locked = inLockState
+      If inLockState Then
+        c.ForeColor = RGB(0, 0, 255)
+      Else
+        c.ForeColor = RGB(0, 0, 0)
+      End If
+    End If
+  Next c
+End Sub
+
+Private Sub List30_AfterUpdate()
+  Me.Recordset.FindFirst "[CustomerID] = " & Me.List30
+  mEventProxy.EventProxy.SendSceduleCustomerSelected Me.Recordset
+End Sub
