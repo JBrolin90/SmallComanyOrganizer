@@ -27,15 +27,27 @@ End Sub
 Public Property Get GrossSalary()
   Dim profit As Double
   profit = Sales.CustomerSales + Sales.RUT - salaries.Total - expenses.netTotal
-  GrossSalary = profit - mTax.Egenavgift(profit)
+  If profit <= 0 Then
+    GrossSalary = 0
+  Else
+    GrossSalary = profit - mTax.Egenavgift(profit)
+  End If
 End Property
 
 
 
 Public Property Get Tax()
-  Tax = mTax.ASkatt(GrossSalary, 31)
+  If GrossSalary <= 0 Then
+    Tax = 0
+  Else
+    Tax = mTax.ASkatt(GrossSalary, 31)  'Sugey has table 31
+  End If
 End Property
 
 Public Property Get NetSalary()
-  NetSalary = GrossSalary - Tax
+  If GrossSalary <= 0 Then
+    NetSalary = 0
+  Else
+    NetSalary = GrossSalary - Tax
+  End If
 End Property

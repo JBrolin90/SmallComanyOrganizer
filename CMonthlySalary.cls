@@ -30,6 +30,8 @@ Public Sub SumTotals(inMonth As Long, inYear As Long)
   Dim monthlySalaries As New CSalary
   monthlySalaries.SalaryMonth = inMonth
   monthlySalaries.SalaryYear = inYear
+  Debug.Print
+  Debug.Print "== BEGIN SALARIES =="
   Do
     monthlySalaries.EmpID = employees.getEmpID()
     monthlySalaries.Init
@@ -38,9 +40,13 @@ Public Sub SumTotals(inMonth As Long, inYear As Long)
     mSocial = mSocial + monthlySalaries.SocialFee
     mNet = mNet + monthlySalaries.NetSalary
     mTotal = mGross + mSocial
-    Debug.Print employees.FullName & " " & employees.getEmpID() & " " & monthlySalaries.GrossSalary
-    
+    If monthlySalaries.GrossSalary > 0 Then
+      Debug.Print employees.FullName & " " & employees.getEmpID() & " " & monthlySalaries.GrossSalary
+    End If
+    DoEvents
   Loop While employees.nextEmployee
+  Debug.Print "mGross=" & mGross & " mATax=" & mATax & " mSocial" & mSocial & " mNet=" & mNet & " mTotal=" & mTotal
+  Debug.Print "== END SALARIES =="
 End Sub
 
 Public Property Get GrossSalary() As Currency

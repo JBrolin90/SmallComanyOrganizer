@@ -7,7 +7,16 @@ Private Const PayDay As String = "Att utbetala <Month> 25"
 Private ss As New CSugeySalary
 
 Private Sub ev_CurrentPeriod(Year As Long, Month As Long)
+  Debug.Print "==== Calculating Sugey's salary ===="
+  Me.tbGrossSalary = ""
+  Me.tbTax = ""
+  Me.tbNetSalary = ""
+  Me.lblToPay.Caption = ""
+  DoEvents
+  DoEvents
+  
   ss.Init Year, Month
+  
   Me.tbGrossSalary = ss.GrossSalary
   Me.tbTax = ss.Tax
   Me.tbNetSalary = ss.NetSalary

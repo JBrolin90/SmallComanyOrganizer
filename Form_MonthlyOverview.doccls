@@ -4,15 +4,30 @@ Option Compare Database
 Private monthlySales As New CMonthlySales
 Private monthlySalary As New CMonthlySalary
 
-
+Private Sub ClearFields()
+  Me.tbVAT = ""
+  Me.tbSales = ""
+  Me.tbRUT = ""
+  Me.tbTotal = ""
+  Me.tbGrossSalary = ""
+  Me.tbATax = ""
+  Me.tbNetSalary = ""
+  Me.tbSocialFee = ""
+  Me.tbTotalTax = ""
+  Me.tbTotalExp = ""
+  DoEvents
+End Sub
 Private Sub bnCalculate_Click()
+  DoCmd.Hourglass True
+  ClearFields
   monthlySales.SumTotals Me.cbMonth, Me.tbYear
-  monthlySalary.SumTotals Me.cbMonth, Me.tbYear
   DrawSales
   DoEvents
+  monthlySalary.SumTotals Me.cbMonth, Me.tbYear
   DrawSalaries
   DoEvents
   mEventProxy.EventProxy.SendPeriod Me.tbYear, Me.cbMonth
+  DoCmd.Hourglass False
 End Sub
 
 Private Sub DrawSales()

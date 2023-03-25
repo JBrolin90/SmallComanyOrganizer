@@ -28,6 +28,8 @@ Public Sub SumTotals(inMonth As Long, inYear As Long)
   Dim customers As New CCustomer
   customers.CustomerID
   customers.Begin
+  Debug.Print
+  Debug.Print "=== START INVOICES ===="
   Do
     Dim monthlySales As New CInvoiceCalc
     monthlySales.Calculate customers.getCustomerID(), inYear, inMonth
@@ -36,9 +38,13 @@ Public Sub SumTotals(inMonth As Long, inYear As Long)
     mRUT = mRUT + monthlySales.RUT
     mNet = mNet + monthlySales.Net
     mTotal = mNet + mVAT + mRUT
-    Debug.Print customers.FullName & " " & customers.getCustomerID() & " " & monthlySales.AmountTotal
-    
+    If monthlySales.Net > 0 Then
+      Debug.Print customers.FullName & " " & customers.getCustomerID() & " " & monthlySales.AmountTotal
+    End If
+    DoEvents
   Loop While customers.nextCustomer
+  Debug.Print "TOTALS: mVAT=" & mVAT & " mRUT=" & mRUT & " mNet=" & mNet & "mTotal=" & mTotal
+  Debug.Print "=== END INVOICES ===="
 End Sub
 
 Public Property Get CustomerSales() As Currency
