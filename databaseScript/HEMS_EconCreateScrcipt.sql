@@ -1,0 +1,360 @@
+USE [master]
+GO
+/****** Object:  Database [HEMS_Econ]    Script Date: 4/15/2023 8:58:09 PM ******/
+CREATE DATABASE [HEMS_Econ]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'HEMS_Econ', FILENAME = N'/var/opt/mssql/data/HEMS_Econ.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'HEMS_Econ_log', FILENAME = N'/var/opt/mssql/data/HEMS_Econ_log.ldf' , SIZE = 73728KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT
+GO
+ALTER DATABASE [HEMS_Econ] SET COMPATIBILITY_LEVEL = 150
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [HEMS_Econ].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [HEMS_Econ] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [HEMS_Econ] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [HEMS_Econ] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [HEMS_Econ] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [HEMS_Econ] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET RECOVERY FULL 
+GO
+ALTER DATABASE [HEMS_Econ] SET  MULTI_USER 
+GO
+ALTER DATABASE [HEMS_Econ] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [HEMS_Econ] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [HEMS_Econ] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [HEMS_Econ] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [HEMS_Econ] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [HEMS_Econ] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+ALTER DATABASE [HEMS_Econ] SET QUERY_STORE = OFF
+GO
+USE [HEMS_Econ]
+GO
+/****** Object:  Table [dbo].[Customers]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Customers](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerID] [int] NULL,
+	[FirstName] [nvarchar](255) NULL,
+	[LastName] [nvarchar](255) NULL,
+	[PopularName] [nvarchar](255) NULL,
+	[Street] [nvarchar](255) NULL,
+	[StreetNumber] [nvarchar](255) NULL,
+	[AptNr] [nvarchar](255) NULL,
+	[City] [nvarchar](255) NULL,
+	[Zip] [nvarchar](255) NULL,
+	[PersonalNumber] [nvarchar](255) NULL,
+	[email] [nvarchar](255) NULL,
+	[phone] [nvarchar](50) NULL,
+	[PriceLow] [money] NULL,
+	[PriceHigh] [money] NULL,
+	[CreditDays] [int] NULL,
+	[EmployeeID] [int] NULL,
+	[RUT] [bit] NOT NULL,
+	[DayOfWeek] [int] NULL,
+	[Plan] [int] NULL,
+	[ProduktId] [int] NULL,
+	[InvoiceFolder] [ntext] NULL,
+ CONSTRAINT [PK_Customers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[DaysOfWeek]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[DaysOfWeek](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Day] [nchar](10) NULL,
+ CONSTRAINT [PK_DaysOfWeek] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Employees]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Employees](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeID] [int] NULL,
+	[FirstName] [nvarchar](255) NULL,
+	[LastName] [nvarchar](255) NULL,
+	[PopularName] [nvarchar](255) NULL,
+	[Street] [nvarchar](255) NULL,
+	[StreetNumber] [nvarchar](255) NULL,
+	[AptNr] [nvarchar](255) NULL,
+	[City] [nvarchar](255) NULL,
+	[Zip] [nvarchar](255) NULL,
+	[PersonalNumber] [nvarchar](255) NULL,
+	[SalaryPerHour] [money] NULL,
+	[PayDay] [int] NULL,
+	[TaxTable] [int] NULL,
+	[SocialFee] [float] NULL,
+	[Bank] [nvarchar](255) NULL,
+	[Account] [nvarchar](255) NULL,
+	[Mail] [nvarchar](255) NULL,
+	[Phone] [nvarchar](255) NULL,
+	[StatementFolder] [ntext] NULL,
+ CONSTRAINT [PK_Employees] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Error]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Error](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[eNumber] [int] NULL,
+	[eInstance] [int] NULL,
+	[eDate] [datetime] NULL,
+	[eUser] [nvarchar](50) NULL,
+	[eDescription] [nvarchar](max) NULL,
+	[eProcedure] [nvarchar](50) NULL,
+	[eModule] [nvarchar](50) NULL,
+	[eSource] [nvarchar](50) NULL,
+	[eLine] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Error] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Expenses]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Expenses](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NULL,
+	[Company] [nvarchar](50) NULL,
+	[Recurring] [nchar](10) NULL,
+	[Frequency] [bigint] NULL,
+	[VAT] [real] NULL,
+	[Amount] [money] NULL,
+ CONSTRAINT [PK_Expenses] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Jobs]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Jobs](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[JobName] [nvarchar](255) NULL,
+	[PriceLow] [money] NULL,
+	[PriceHigh] [money] NULL,
+	[RUT] [bit] NULL,
+ CONSTRAINT [PK_Jobs] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Months]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Months](
+	[MonthNr] [int] NULL,
+	[MonthName] [nvarchar](255) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[PlaceHolders]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PlaceHolders](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[placeHolderName] [nvarchar](50) NULL,
+	[text] [nvarchar](50) NULL,
+	[version] [nvarchar](50) NULL,
+	[language] [nchar](2) NULL,
+ CONSTRAINT [PK_PlaceHolders] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Plans]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Plans](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Plan] [nchar](50) NULL,
+ CONSTRAINT [PK_Plans] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[SalaryPayOuts]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SalaryPayOuts](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeID] [int] NULL,
+	[PayDay] [int] NULL,
+	[PayMonth] [int] NULL,
+	[PayYear] [int] NULL,
+	[Gross] [int] NULL,
+	[Tax] [int] NULL,
+	[SocialFee] [int] NULL,
+ CONSTRAINT [PK_SalaryPayOuts] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Schedules]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Schedules](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerID] [int] NOT NULL,
+	[DateActual] [datetime2](7) NULL,
+	[StartTime] [datetime2](7) NULL,
+	[EndTime] [datetime2](7) NULL,
+	[DurationPlanned] [float] NOT NULL,
+	[DurationActual] [float] NULL,
+	[EmployeeIDPlanned] [int] NULL,
+	[EmployeeIDActual] [int] NULL,
+	[StartTimePlanned] [datetime2](7) NULL,
+	[Job] [int] NULL,
+	[RUT] [bit] NULL,
+	[PayDay] [int] NULL,
+	[PayMonth] [int] NULL,
+	[PayYear] [int] NULL,
+	[PricePerHour] [money] NOT NULL,
+	[OBIndex] [int] NULL,
+ CONSTRAINT [PK_Schedules] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Settings]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Settings](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Tag] [nvarchar](255) NULL,
+	[TagValue] [nvarchar](255) NULL,
+	[index] [int] NULL,
+	[TagNumerical] [real] NULL,
+ CONSTRAINT [PK_Settings] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TaxTable]    Script Date: 4/15/2023 8:58:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TaxTable](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Antal dgr] [nvarchar](255) NULL,
+	[Tabellnr] [smallint] NULL,
+	[Inkomst from] [int] NULL,
+	[Inkomst tom] [int] NULL,
+	[Kolumn 1] [smallint] NULL,
+	[Kolumn 2] [smallint] NULL,
+	[Kolumn 3] [smallint] NULL,
+	[Kolumn 4] [smallint] NULL,
+	[Kolumn 5] [smallint] NULL,
+	[Kolumn 6] [smallint] NULL,
+ CONSTRAINT [PK_TaxTable] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Customers] ADD  CONSTRAINT [DF_Customers_RUT]  DEFAULT ((0)) FOR [RUT]
+GO
+ALTER TABLE [dbo].[PlaceHolders] ADD  CONSTRAINT [DF_PlaceHolders_version]  DEFAULT (N'1.1') FOR [version]
+GO
+ALTER TABLE [dbo].[PlaceHolders] ADD  CONSTRAINT [DF_PlaceHolders_language]  DEFAULT (N'EN') FOR [language]
+GO
+USE [master]
+GO
+ALTER DATABASE [HEMS_Econ] SET  READ_WRITE 
+GO
